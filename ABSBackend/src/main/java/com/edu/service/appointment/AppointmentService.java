@@ -7,6 +7,7 @@ import com.edu.entity.User;
 import com.edu.repository.AppointmentRepository;
 import com.edu.repository.UserRepository;
 import com.edu.util.JwtUtil;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,7 @@ public class AppointmentService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public AppointmentDTO createAppointment(CreateAppointmentDTO createAppointmentDTO) {
         if (appointmentRepository.existsByAppointmentDateTimeAndCancelledFalse(createAppointmentDTO.getAppointmentDateTime())) {
             throw new RuntimeException("Time slot is already booked");
@@ -50,6 +52,7 @@ public class AppointmentService {
         return convertToDTO(savedAppointment);
     }
 
+    @Transactional
     public AppointmentDTO cancelAppointment(Long appointmentId) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new RuntimeException("Appointment not found"));
