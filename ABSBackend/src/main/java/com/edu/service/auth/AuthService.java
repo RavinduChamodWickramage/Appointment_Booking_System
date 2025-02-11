@@ -24,6 +24,7 @@ public class AuthService {
 
     public UserDto createUser(SignupRequest signupRequest) {
         User user = new User();
+        user.setName(signupRequest.getName());
         user.setUsername(signupRequest.getUsername());
         user.setPassword(bCryptPasswordEncoder.encode(signupRequest.getPassword()));
         user.setRole(Role.valueOf(signupRequest.getRole().toUpperCase()));
