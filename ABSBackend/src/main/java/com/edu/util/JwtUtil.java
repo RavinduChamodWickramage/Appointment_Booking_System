@@ -1,10 +1,14 @@
 package com.edu.util;
 
+import com.edu.entity.User;
+import com.edu.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -19,13 +23,19 @@ public class JwtUtil {
     @Value("${jwt.secret}")
     private String SECRET;
 
+    @Autowired
+    private UserRepository userRepository;
+
 
     private static final long JWT_TOKEN_VALIDITY = 1000 * 60 * 60 * 24;
 
     public String generateToken(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
         Map<String, Object> claims = new HashMap<>();
-        String token = createToken(claims, username);
-        return token;
+        claims.put("role", "ROLE_" + user.getRole().name());
+        return createToken(claims, username);
     }
 
     private String createToken(Map<String, Object> claims, String username) {

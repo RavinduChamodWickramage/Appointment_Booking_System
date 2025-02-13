@@ -18,6 +18,6 @@ public class AdminController {
 
     @GetMapping("/appointments")
     public List<AppointmentDTO> getAllAppointments() {
-        return appointmentService.getAppointmentsForUser(null);
+        return appointmentService.getAllAppointments();
     }
 }

@@ -33,6 +33,14 @@ public class AppointmentService {
                 .collect(Collectors.toList());
     }
 
+    public List<AppointmentDTO> getAllAppointments() {
+        List<Appointment> appointments = appointmentRepository.findAll();
+        return appointments.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+
     @Transactional
     public AppointmentDTO createAppointment(CreateAppointmentDTO createAppointmentDTO) {
         if (appointmentRepository.existsByAppointmentDateTimeAndCancelledFalse(createAppointmentDTO.getAppointmentDateTime())) {

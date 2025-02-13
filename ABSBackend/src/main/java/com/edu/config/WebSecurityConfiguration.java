@@ -31,6 +31,7 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/auth/login", "/auth/sign-up", "/slots").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/**").authenticated()
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

@@ -3,12 +3,15 @@ package com.edu.service.jwt;
 import com.edu.entity.User;
 import com.edu.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,7 +26,16 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
         if(optionalUser.isEmpty()) throw new UsernameNotFoundException("User not found", null);
 
-        return new org.springframework.security.core.userdetails.User(optionalUser.get().getUsername(),
-                optionalUser.get().getPassword(), new ArrayList<>());
+        User user = optionalUser.get();
+
+        List<GrantedAuthority> authorities = List.of(
+                new SimpleGrantedAuthority("ROLE_" + user.getRole().name())
+        );
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getPassword(),
+                authorities
+        );
     }
 }
